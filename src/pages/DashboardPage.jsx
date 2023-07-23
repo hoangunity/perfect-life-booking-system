@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Button,
   Container,
@@ -13,6 +13,7 @@ import jwtDecode from "jwt-decode";
 import axios from "axios";
 import { format } from "date-fns";
 import DeleteButton from "../components/DeleteButton";
+import EditButton from "../components/EditButton";
 
 export default function DashboardPage() {
   const BASE_URL =
@@ -146,12 +147,13 @@ export default function DashboardPage() {
                     <td>{row.trainer_id}</td>
                     <td>{row.start_time}</td>
                     <td>{row.end_time}</td>
-                    <td>
+                    <td className="d-flex gap-3">
                       <DeleteButton
                         bookingId={row.id}
                         setBookings={setBookings}
                         bookings={bookings}
                       />
+                      <EditButton as={Link} to={`/app/edit/${row.id}`} />
                     </td>
                   </tr>
                 ))}
@@ -177,6 +179,7 @@ export default function DashboardPage() {
               <Form.Select
                 aria-label="Pick a trainer"
                 onChange={(e) => setTrainerId(e.target.value)}
+                required
               >
                 <option>Choose your trainer</option>
                 {trainers.map((trainer) => {
@@ -196,6 +199,7 @@ export default function DashboardPage() {
                 min={currentDay}
                 value={appointmentDate}
                 onChange={(e) => setAppointmentDate(e.target.value)}
+                required
               />
             </Form.Group>
 
@@ -208,6 +212,7 @@ export default function DashboardPage() {
                   setStartTime(e.target.value);
                   console.log(startTime);
                 }}
+                required
               />
             </Form.Group>
 
@@ -220,6 +225,7 @@ export default function DashboardPage() {
                   setEndTime(e.target.value);
                   console.log(endTime);
                 }}
+                required
               />
             </Form.Group>
 
