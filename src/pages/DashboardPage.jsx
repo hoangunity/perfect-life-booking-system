@@ -13,7 +13,6 @@ import jwtDecode from "jwt-decode";
 import axios from "axios";
 import { format } from "date-fns";
 import DeleteButton from "../components/DeleteButton";
-import EditButton from "../components/EditButton";
 
 export default function DashboardPage() {
   const BASE_URL =
@@ -23,9 +22,16 @@ export default function DashboardPage() {
   const [trainers, setTrainers] = useState([]);
   const [showModal, setBookingModal] = useState("");
   const handleShowBookingModal = () => setBookingModal("booking/create");
-  const handleShowEditModal = () => setBookingModal("booking/edit");
+  const clearForm = () => {
+    setTrainerId("");
+    setAppointmentDate("");
+    setStartTime("");
+    setEndTime("");
+  };
+
   const handleCloseModal = () => {
     setBookingModal("");
+    clearForm();
   };
   const currentDay = new Date().toISOString().split("T")[0];
   const [memberId, setMemberId] = useState("");
@@ -40,8 +46,8 @@ export default function DashboardPage() {
       const payload = {
         trainer_id: trainerId,
         appointment_date: appointmentDate,
-        start_time: startTime,
-        end_time: endTime,
+        start_time: startTime + ":00",
+        end_time: endTime + ":00",
       };
 
       const result = await axios.post(
@@ -51,6 +57,7 @@ export default function DashboardPage() {
 
       console.log(result.data);
       setBookings((prevBookings) => [...prevBookings, result.data.data]);
+      clearForm();
       handleCloseModal();
     } catch (error) {
       console.error(error);
@@ -198,7 +205,7 @@ export default function DashboardPage() {
                 type="time"
                 value={startTime}
                 onChange={(e) => {
-                  setStartTime(e.target.value + ":00");
+                  setStartTime(e.target.value);
                   console.log(startTime);
                 }}
               />
@@ -210,7 +217,7 @@ export default function DashboardPage() {
                 type="time"
                 value={endTime}
                 onChange={(e) => {
-                  setEndTime(e.target.value + ":00");
+                  setEndTime(e.target.value);
                   console.log(endTime);
                 }}
               />
